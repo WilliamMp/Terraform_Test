@@ -1,4 +1,4 @@
-resource "aws_subnet" "subnets" {
+resource "aws_subnet" "subnet" {
   for_each = var.subnets
 
   vpc_id                  = aws_vpc.main.id

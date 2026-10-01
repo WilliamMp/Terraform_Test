@@ -1,0 +1,8 @@
+# Terraform lock file
+*.hcl
+
+# Terraform working directory
+.terraform/
+
+# Terraform validate output
+validate_output.json
