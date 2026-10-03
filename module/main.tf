@@ -1,3 +1,10 @@
+terraform {
+  backend "s3" {}
+}
+
+
+
+
 provider "aws" {
   region = local.aws_region
 
@@ -8,6 +15,7 @@ provider "aws" {
     }
   }
 }
+
 
 module "network" {
   source = "./network"

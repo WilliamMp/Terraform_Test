@@ -1,11 +1,17 @@
-# Terraform lock file
-*.hcl
+# Terraform working files and state
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
 
-# Terraform working directory
-.terraform/
+# Local backend configuration
+backend.hcl
 
-# Terraform validate output
+# Local variable values
+*.tfvars
+*.tfvars.json
+
+# Generated files
 validate_output.json
-
-# Lambda build artifact
-function.zip
+function.zip    

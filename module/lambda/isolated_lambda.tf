@@ -4,8 +4,8 @@ resource "aws_lambda_function" "isolated" {
 
   runtime          = var.runtime
   handler          = "handler.handler"
-  filename         = "${path.module}/function.zip"
-  source_code_hash = filebase64sha256("${path.module}/function.zip")
+  filename         = data.archive_file.function.output_path
+  source_code_hash = data.archive_file.function.output_base64sha256
 
   timeout     = var.timeout
   memory_size = var.memory_size
