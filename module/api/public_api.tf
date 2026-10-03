@@ -40,3 +40,49 @@ resource "aws_lambda_permission" "public_api" {
 
   source_arn = "${aws_api_gateway_rest_api.public.execution_arn}/*/POST/process"
 }
+
+
+resource "aws_api_gateway_deployment" "public" {
+  rest_api_id = aws_api_gateway_rest_api.public.id
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.public_process.path_part,
+      aws_api_gateway_method.public_process_post.http_method,
+      aws_api_gateway_method.public_process_post.authorization,
+      aws_api_gateway_integration.public_process_lambda.type,
+      aws_api_gateway_integration.public_process_lambda.integration_http_method,
+      aws_api_gateway_integration.public_process_lambda.uri
+    ]))
+  }
+
+  depends_on = [
+    aws_api_gateway_integration.public_process_lambda,
+    aws_lambda_permission.public_api
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "public" {
+  rest_api_id   = aws_api_gateway_rest_api.public.id
+  deployment_id = aws_api_gateway_deployment.public.id
+  stage_name    = var.stage_name
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.public_api.arn
+
+    format = jsonencode({
+      requestId       = "$context.requestId"
+      httpMethod      = "$context.httpMethod"
+      resourcePath    = "$context.resourcePath"
+      status          = "$context.status"
+      responseLatency = "$context.responseLatency"
+      responseLength  = "$context.responseLength"
+    })
+  }
+
+  depends_on = [aws_api_gateway_account.logging]
+}

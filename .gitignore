@@ -6,3 +6,6 @@
 
 # Terraform validate output
 validate_output.json
+
+# Lambda build artifact
+function.zip

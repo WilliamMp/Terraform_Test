@@ -57,3 +57,8 @@ variable "bucket_name" {
   description = "Bucket used to store processed data."
   type        = string
 }
+
+variable "log_retention_days" {
+  description = "Number of days to retain Lambda logs."
+  type        = number
+}

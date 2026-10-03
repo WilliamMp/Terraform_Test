@@ -23,4 +23,6 @@ resource "aws_lambda_function" "isolated" {
       BUCKET_NAME = var.bucket_name
     }
   }
+
+  depends_on = [aws_cloudwatch_log_group.isolated]
 }

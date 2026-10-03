@@ -39,3 +39,9 @@ variable "private_invoke_arn" {
   description = "Private Lambda invocation ARN for API Gateway."
   type        = string
 }
+
+
+variable "log_retention_days" {
+  description = "Number of days to retain API access logs."
+  type        = number
+}

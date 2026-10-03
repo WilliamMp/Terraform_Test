@@ -20,8 +20,10 @@ module "network" {
 module "storage" {
   source = "./storage"
 
-  project_name   = local.project_name
-  s3_endpoint_id = module.network.s3_endpoint_id
+  project_name             = local.project_name
+  s3_endpoint_id           = module.network.s3_endpoint_id
+  isolated_lambda_role_arn = module.iam.isolated_lambda_role_arn
+
 
 }
 
@@ -30,7 +32,6 @@ module "iam" {
 
   project_name = local.project_name
   bucket_arn   = module.storage.bucket_arn
-
 }
 
 module "lambda" {
@@ -50,9 +51,14 @@ module "lambda" {
 
   bucket_name = module.storage.bucket_name
 
+  runtime     = var.lambda_runtime
+  timeout     = var.lambda_timeout
+  memory_size = var.lambda_memory_size
+
+  log_retention_days = var.log_retention_days
+
   depends_on = [module.iam]
 }
-
 
 module "api" {
   source = "./api"
@@ -68,13 +74,18 @@ module "api" {
   private_function_name = module.lambda.private_function_name
   private_invoke_arn    = module.lambda.private_invoke_arn
 
-  stage_name = var.api_stage_name
+  stage_name         = var.api_stage_name
+  log_retention_days = var.log_retention_days
 }
 
+module "waf" {
+  source = "./waf"
 
+  project_name     = local.project_name
+  public_stage_arn = module.api.public_stage_arn
+}
 
-
-#### Resoucer Policy
+#### Resource Policy
 
 resource "aws_vpc_endpoint_policy" "s3" {
   vpc_endpoint_id = module.network.s3_endpoint_id
@@ -94,7 +105,6 @@ resource "aws_vpc_endpoint_policy" "s3" {
     ]
   })
 }
-
 
 resource "aws_iam_role_policy" "private_lambda_invoke_api" {
   name = "${local.project_name}-invoke-private-api"

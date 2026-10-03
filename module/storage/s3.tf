@@ -83,6 +83,19 @@ resource "aws_s3_bucket_policy" "data" {
             "aws:SourceVpce" = var.s3_endpoint_id
           }
         }
+      },
+      {
+        Sid       = "DenyObjectAccessFromOtherIdentities"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource  = "${aws_s3_bucket.data.arn}/*"
+
+        Condition = {
+          ArnNotEquals = {
+            "aws:PrincipalArn" = var.isolated_lambda_role_arn
+          }
+        }
       }
     ]
   })

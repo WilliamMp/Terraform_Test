@@ -23,7 +23,11 @@ variable "api_stage_name" {
   default     = "dev"
 }
 
-
+variable "log_retention_days" {
+  description = "Number of days to retain application logs."
+  type        = number
+  default     = 14
+}
 
 
 

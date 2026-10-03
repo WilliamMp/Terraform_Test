@@ -123,4 +123,19 @@ resource "aws_api_gateway_stage" "private" {
   rest_api_id   = aws_api_gateway_rest_api.private.id
   deployment_id = aws_api_gateway_deployment.private.id
   stage_name    = var.stage_name
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.private_api.arn
+
+    format = jsonencode({
+      requestId       = "$context.requestId"
+      httpMethod      = "$context.httpMethod"
+      resourcePath    = "$context.resourcePath"
+      status          = "$context.status"
+      responseLatency = "$context.responseLatency"
+      responseLength  = "$context.responseLength"
+    })
+  }
+
+  depends_on = [aws_api_gateway_account.logging]
 }

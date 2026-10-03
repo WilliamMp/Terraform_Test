@@ -17,4 +17,6 @@ resource "aws_lambda_function" "private" {
       var.private_security_group_id
     ]
   }
+
+  depends_on = [aws_cloudwatch_log_group.private]
 }
