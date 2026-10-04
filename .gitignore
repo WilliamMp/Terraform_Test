@@ -1,0 +1,17 @@
+# Terraform working files and state
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Local backend configuration
+backend.hcl
+
+# Local variable values
+*.tfvars
+*.tfvars.json
+
+# Generated files
+validate_output.json
+function.zip    
